@@ -171,8 +171,8 @@
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
                         fileURL = url; // Store the file URL
-                        viewKey = new Date().getTime(); // Generate a unique view key (timestamp)
-                        const customURL = `https://maxvelshare.github.io/view.html?viewkey=${viewKey}`;
+                        viewKey = file.name; // Use the filename as the view key
+                        const customURL = `https://maxvelshare.github.io/view.html?viewkey=${encodeURIComponent(viewKey)}`;
                         copyLink(customURL); // Automatically copy the link
                         statusElement.innerText = ''; // Clear the status
                         setTimeout(() => {
