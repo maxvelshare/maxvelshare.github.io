@@ -37,7 +37,7 @@
         // Function to update the page with file details
         function updatePage(fileUrl) {
             // Extract the file name from the URL
-            const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+            const fileName = decodeURIComponent(fileUrl.substring(fileUrl.lastIndexOf('/') + 1));
             
             // Update page content
             document.getElementById('file-name').textContent = `${fileName} (Loading...)`;
@@ -63,11 +63,14 @@
                 return;
             }
 
+            // Ensure URL is encoded correctly
+            const encodedFileUrl = encodeURI(fileUrl);
+
             // Verify if the file URL is valid
-            fetch(fileUrl, { method: 'HEAD' }) // Use HEAD to check if the file exists without downloading
+            fetch(encodedFileUrl, { method: 'HEAD' }) // Use HEAD to check if the file exists without downloading
                 .then(response => {
                     if (response.ok) {
-                        updatePage(fileUrl);
+                        updatePage(encodedFileUrl);
                     } else {
                         throw new Error(`File not found (HTTP ${response.status})`);
                     }
