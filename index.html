@@ -34,14 +34,25 @@
         }
         #notification {
             position: fixed;
-            bottom: 20px;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #333;
+            background-color: #222;
             color: #fff;
-            padding: 10px 20px;
+            padding: 20px 30px;
             border-radius: 5px;
             display: none;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10000;
+            transition: transform 0.3s, opacity 0.3s;
+            opacity: 0;
+            transform: translateX(-50%) translateY(-100%);
+        }
+        #notification.show {
+            display: block;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
         #status {
             margin-top: 10px;
@@ -142,9 +153,9 @@
             if (fileURL) {
                 navigator.clipboard.writeText(fileURL).then(() => {
                     // Display a notification
-                    notification.style.display = 'block';
+                    notification.classList.add('show');
                     setTimeout(() => {
-                        notification.style.display = 'none';
+                        notification.classList.remove('show');
                     }, 3000); // Hide the notification after 3 seconds
                 }).catch(err => {
                     console.error('Failed to copy link: ', err);
