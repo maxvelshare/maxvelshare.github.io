@@ -112,7 +112,7 @@
         dropZone.addEventListener('click', () => fileInput.click());
 
         dropZone.addEventListener('dragover', (event) => {
-            event.preventDefault(); // Necessary to allow dropping
+            event.preventDefault();
             event.stopPropagation();
             dropZone.classList.add('dragover');
         });
@@ -123,7 +123,7 @@
         });
 
         dropZone.addEventListener('drop', (event) => {
-            event.preventDefault(); // Necessary to prevent default behavior
+            event.preventDefault();
             event.stopPropagation();
             dropZone.classList.remove('dragover');
             const files = event.dataTransfer.files;
@@ -145,25 +145,22 @@
 
             uploadTask.on('state_changed',
                 (snapshot) => {
-                    // Progress function (optional)
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     statusElement.innerText = 'Upload is ' + progress + '% done';
                 },
                 (error) => {
-                    // Error function
                     console.error('Upload failed:', error);
                     statusElement.innerText = 'Upload failed: ' + error.message;
                 },
                 () => {
-                    // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                        const viewKey = file.name; // Use the filename as the view key
+                        const viewKey = file.name; 
                         const customURL = `https://maxvelshare.github.io/view.html?viewkey=${encodeURIComponent(viewKey)}`;
-                        copyLink(customURL); // Automatically copy the link
-                        statusElement.innerText = ''; // Clear the status
+                        copyLink(customURL); 
+                        statusElement.innerText = ''; 
                         setTimeout(() => {
-                            window.location.href = customURL; // Redirect to the custom URL
-                        }, 3000); // Redirect after 3 seconds
+                            window.location.href = customURL; 
+                        }, 3000);
                     });
                 }
             );
@@ -172,11 +169,10 @@
         function copyLink(url) {
             if (url) {
                 navigator.clipboard.writeText(url).then(() => {
-                    // Display a notification
                     notification.classList.add('show');
                     setTimeout(() => {
                         notification.classList.remove('show');
-                    }, 3000); // Hide the notification after 3 seconds
+                    }, 3000);
                 }).catch(err => {
                     console.error('Failed to copy link: ', err);
                 });
