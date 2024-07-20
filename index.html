@@ -13,7 +13,6 @@
 <body>
     <h1>Upload a File</h1>
     <input type="file" id="fileInput">
-    <button id="uploadButton">Upload</button>
     <p id="link"></p>
     <button id="copyButton">Copy Link</button>
     <p id="status"></p>
@@ -38,12 +37,11 @@
         firebase.initializeApp(firebaseConfig);
         const storage = firebase.storage();
 
-        document.getElementById('uploadButton').addEventListener('click', uploadFile);
+        document.getElementById('fileInput').addEventListener('change', uploadFile);
         document.getElementById('copyButton').addEventListener('click', copyLink);
 
-        function uploadFile() {
-            const fileInput = document.getElementById('fileInput');
-            const file = fileInput.files[0];
+        function uploadFile(event) {
+            const file = event.target.files[0];
 
             if (!file) {
                 document.getElementById('status').innerText = 'No file selected!';
@@ -67,9 +65,14 @@
                 () => {
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                        document.getElementById('link').innerText = url;
-                        document.getElementById('link').style.cursor = 'pointer';
-                        document.getElementById('copyButton').style.display = 'inline';
+                        const linkElement = document.getElementById('link');
+                        linkElement.innerText = url;
+                        linkElement.style.cursor = 'pointer';
+                        
+                        const copyButton = document.getElementById('copyButton');
+                        copyButton.style.display = 'inline';
+                        copyButton.disabled = false;
+
                         document.getElementById('status').innerText = 'Upload successful!';
                     });
                 }
