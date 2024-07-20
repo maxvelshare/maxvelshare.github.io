@@ -14,8 +14,8 @@
             background-size: cover;
         }
         #dropZone {
-            width: 80vw; /* Größe der Drop-Zone */
-            height: 80vh; /* Größe der Drop-Zone */
+            width: 80vw; /* Size of the drop zone */
+            height: 80vh; /* Size of the drop zone */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,19 +24,19 @@
             color: #666;
             border: 2px dashed #ccc;
             border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.8); /* Weniger Transparenz */
+            background-color: rgba(255, 255, 255, 0.9); /* Less transparency */
             position: absolute;
-            top: 50%; /* Zentrieren mit Top 50% */
-            left: 50%; /* Zentrieren mit Left 50% */
-            transform: translate(-50%, -50%); /* Zentriert basierend auf Top/Left 50% */
+            top: 50%; /* Centering with Top 50% */
+            left: 50%; /* Centering with Left 50% */
+            transform: translate(-50%, -50%); /* Center based on Top/Left 50% */
             z-index: 9999;
             transition: background-color 0.3s, border-color 0.3s;
-            text-align: center; /* Zentriert den Text horizontal */
-            padding: 20px; /* Abstand zum Rand */
+            text-align: center; /* Center text horizontally */
+            padding: 20px; /* Padding */
         }
         #dropZone.dragover {
             border-color: #333;
-            background-color: rgba(240, 240, 240, 0.9); /* Weniger Transparenz im Drag-over-Zustand */
+            background-color: rgba(240, 240, 240, 0.9); /* Less transparency when dragging over */
         }
         #notification {
             position: fixed;
@@ -71,15 +71,15 @@
             font-size: 16px;
             color: #999;
         }
-        /* Zusätzliche Anpassungen für Mobilgeräte */
+        /* Additional styles for mobile devices */
         @media (max-width: 600px) {
             #dropZone {
-                width: 90vw; /* Größerer Anteil des Viewports für kleinere Bildschirme */
-                height: 70vh; /* Kleinere Höhe für kleinere Bildschirme */
-                font-size: 18px; /* Kleinere Schriftgröße für kleinere Bildschirme */
+                width: 90vw; /* Larger viewport percentage for smaller screens */
+                height: 70vh; /* Smaller height for smaller screens */
+                font-size: 18px; /* Smaller font size for smaller screens */
             }
             #dropZone .madeBy {
-                font-size: 14px; /* Kleinere Schriftgröße für kleinere Bildschirme */
+                font-size: 14px; /* Smaller font size for smaller screens */
             }
         }
     </style>
@@ -90,7 +90,7 @@
         <p class="madeBy"> made by maxvel187</p>
     </div>
     <input type="file" id="fileInput" style="display: none;">
-    <div id="notification">Link copied to clipboard!</div>
+    <div id="notification">Link copied to clipboard and redirecting...</div>
     <p id="status"></p>
 
     <!-- Firebase -->
@@ -172,7 +172,7 @@
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
                         fileURL = url; // Store the file URL
                         viewKey = new Date().getTime(); // Generate a unique view key (timestamp)
-                        const customURL = `https://maxvelshare.github.io/view?viewkey=${viewKey}`;
+                        const customURL = `https://maxvelshare.github.io/view.html?viewkey=${viewKey}`;
                         copyLink(customURL); // Automatically copy the link
                         statusElement.innerText = ''; // Clear the status
                         setTimeout(() => {
@@ -187,7 +187,6 @@
             if (url) {
                 navigator.clipboard.writeText(url).then(() => {
                     // Display a notification
-                    notification.innerText = 'Link copied to clipboard and redirecting...';
                     notification.classList.add('show');
                     setTimeout(() => {
                         notification.classList.remove('show');
@@ -202,4 +201,3 @@
     </script>
 </body>
 </html>
-
