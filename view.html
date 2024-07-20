@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maxvel's Image Host</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Link to favicon -->
 
     <!-- Meta tags for Open Graph and Twitter Card -->
     <meta property="og:title" content="Maxvel's Image Host">
     <meta property="og:description" content="A platform to host and view images and videos securely.">
-    <meta property="og:image" content="https://i1.sndcdn.com/artworks-000428956434-1n5xus-t500x500.jpg">
-    <meta property="og:url" content="https://yourwebsite.com">
+    <meta property="og:image" content="https://i1.sndcdn.com/artworks-000428956434-1n5xus-t500x500.jpg"> <!-- Replace with your image URL -->
+    <meta property="og:url" content="https://yourwebsite.com"> <!-- Replace with your website URL -->
     
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Maxvel's Image Host">
     <meta name="twitter:description" content="A platform to host and view images and videos securely.">
-    <meta name="twitter:image" content="https://i1.sndcdn.com/artworks-000428956434-1n5xus-t500x500.jpg">
+    <meta name="twitter:image" content="https://i1.sndcdn.com/artworks-000428956434-1n5xus-t500x500.jpg"> <!-- Replace with your image URL -->
 
     <meta name="description" content="Maxvel's Image and Video host">
 
@@ -25,58 +25,67 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #000;
+            background: #000; /* Background color black */
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
         }
-        #fileContainer {
-            max-width: 90%;
+        #mediaContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80%;
             max-height: 80%;
-            position: relative;
-            background: #666;
-            padding: 10px;
+            width: 80%;
+            max-width: 80%;
+            background: #333;
             border-radius: 8px;
             overflow: hidden;
-        }
-        #title {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            color: #fff;
-            font-size: 24px;
-            font-weight: bold;
-            z-index: 10;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 5px;
-            border-radius: 5px;
         }
         img, video {
             max-width: 100%;
             max-height: 100%;
-            display: block;
-        }
-        #errorMessage {
-            text-align: center;
-            color: #e74c3c;
-            font-size: 18px;
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div id="fileContainer">
-        <div id="title">Maxvel's Image Host</div>
-        <div id="errorMessage"></div>
-    </div>
+    <div id="mediaContainer"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewKey = urlParams.get('viewkey');
+
+        if (viewKey) {
+            const storage = firebase.storage();
+            const mediaRef = storage.ref('uploads/' + decodeURIComponent(viewKey));
+            mediaRef.getDownloadURL().then((url) => {
+                const mediaContainer = document.getElementById('mediaContainer');
+                const ext = viewKey.split('.').pop().toLowerCase();
+
+                if (ext === 'mp4' || ext === 'webm' || ext === 'ogg') {
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.controls = true;
+                    mediaContainer.appendChild(video);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    mediaContainer.appendChild(img);
+                }
+            }).catch((error) => {
+                console.error('Error fetching file:', error);
+            });
+        } else {
+            document.body.innerHTML = 'No file specified.';
+        }
+    </script>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <script>
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCqLQh3vlumESlbAsZSZRQChp7eW43kzhk",
             authDomain: "maxvel-7367f.firebaseapp.com",
@@ -86,47 +95,7 @@
             appId: "1:394250427835:web:5b1e7bfbddad733277789e",
             measurementId: "G-63JCPM2NR0"
         };
-
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        const storage = firebase.storage();
-
-        // Function to get the URL parameter
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
-
-        const viewKey = getQueryParam('viewkey');
-        const fileContainer = document.getElementById('fileContainer');
-        const errorMessage = document.getElementById('errorMessage');
-
-        if (viewKey) {
-            const storageRef = storage.ref('uploads/' + viewKey);
-
-            storageRef.getDownloadURL().then((url) => {
-                console.log('File URL:', url); // Log the URL
-                const img = new Image();
-                img.src = url;
-                img.onload = () => {
-                    fileContainer.innerHTML = ''; // Clear any existing content
-                    fileContainer.appendChild(img);
-                };
-                img.onerror = () => {
-                    // Not an image, try video
-                    const video = document.createElement('video');
-                    video.src = url;
-                    video.controls = true;
-                    fileContainer.innerHTML = ''; // Clear any existing content
-                    fileContainer.appendChild(video);
-                };
-            }).catch((error) => {
-                console.error('Error loading file:', error); // Log the error
-                errorMessage.textContent = 'Error loading file: ' + error.message;
-            });
-        } else {
-            errorMessage.textContent = 'No view key provided.';
-        }
     </script>
 </body>
 </html>
