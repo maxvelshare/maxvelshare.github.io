@@ -4,12 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File Upload</title>
+    <style>
+        #copyButton {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Upload a File</h1>
     <input type="file" id="fileInput">
     <button id="uploadButton">Upload</button>
     <p id="link"></p>
+    <button id="copyButton">Copy Link</button>
     <p id="status"></p>
 
     <!-- Firebase -->
@@ -33,6 +39,7 @@
         const storage = firebase.storage();
 
         document.getElementById('uploadButton').addEventListener('click', uploadFile);
+        document.getElementById('copyButton').addEventListener('click', copyLink);
 
         function uploadFile() {
             const fileInput = document.getElementById('fileInput');
@@ -60,11 +67,22 @@
                 () => {
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                        document.getElementById('link').innerText = 'File available at: ' + url;
+                        document.getElementById('link').innerText = url;
+                        document.getElementById('link').style.cursor = 'pointer';
+                        document.getElementById('copyButton').style.display = 'inline';
                         document.getElementById('status').innerText = 'Upload successful!';
                     });
                 }
             );
+        }
+
+        function copyLink() {
+            const link = document.getElementById('link').innerText;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy link: ', err);
+            });
         }
     </script>
 </body>
