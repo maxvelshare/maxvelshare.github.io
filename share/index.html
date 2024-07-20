@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic File Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .file-viewer {
+            max-width: 600px;
+            margin: auto;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="file-viewer">
+        <h1 id="file-name">Loading...</h1>
+        <img id="file-image" src="" alt="File Image" style="display: none;">
+        <p id="file-info"></p>
+    </div>
+
+    <script>
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        function fetchFileDetails(url) {
+            // You might need to adjust this part based on how you want to fetch the details.
+            // This example assumes a static site with a simple approach to determine file details.
+            const fileName = url.substring(url.lastIndexOf('/') + 1);
+            const fileSize = 'Unknown size'; // If you want to fetch actual size, you'll need a backend or additional logic.
+
+            return { fileName, fileSize };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileUrl = getQueryParam('url');
+            if (!fileUrl) {
+                document.getElementById('file-info').textContent = 'No file URL provided.';
+                return;
+            }
+
+            const fileDetails = fetchFileDetails(fileUrl);
+
+            document.getElementById('file-name').textContent = `${fileDetails.fileName} (${fileDetails.fileSize})`;
+            document.getElementById('file-image').src = fileUrl;
+            document.getElementById('file-image').style.display = 'block';
+            document.getElementById('file-info').textContent = `Uploaded at ${new Date().toLocaleString()}`; // Example date, adjust as needed
+        });
+    </script>
+</body>
+</html>
