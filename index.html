@@ -8,6 +8,10 @@
         #copyButton {
             display: none;
         }
+        #link {
+            word-wrap: break-word;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -67,13 +71,14 @@
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
                         const linkElement = document.getElementById('link');
                         linkElement.innerText = url;
-                        linkElement.style.cursor = 'pointer';
-                        
+                        linkElement.href = url; // Make the link clickable
+                        linkElement.style.display = 'block'; // Ensure the link is visible
+
                         const copyButton = document.getElementById('copyButton');
                         copyButton.style.display = 'inline';
                         copyButton.disabled = false;
 
-                        document.getElementById('status').innerText = 'Upload successful!';
+                        document.getElementById('status').innerText = ''; // Clear the status
                     });
                 }
             );
