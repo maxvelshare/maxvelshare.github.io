@@ -12,8 +12,8 @@
             overflow: hidden;
         }
         #dropZone {
-            width: 80vw; /* Breite auf 80% der Viewport-Breite einstellen */
-            height: 80vh; /* Höhe auf 80% der Viewport-Höhe einstellen */
+            width: 100vw;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -23,9 +23,8 @@
             border-radius: 8px;
             background-color: rgba(255, 255, 255, 0.8);
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             z-index: 9999;
             transition: background-color 0.3s, border-color 0.3s;
         }
@@ -105,8 +104,6 @@
             }
         });
 
-        copyButton.addEventListener('click', copyLink);
-
         function handleFile(file) {
             const storageRef = storage.ref('uploads/' + file.name);
             const uploadTask = storageRef.put(file);
@@ -126,7 +123,7 @@
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
                         fileURL = url; // Store the file URL
-                        copyButton.style.display = 'inline';
+                        copyLink(); // Automatically copy the link
                         statusElement.innerText = ''; // Clear the status
                     });
                 }
@@ -136,6 +133,7 @@
         function copyLink() {
             if (fileURL) {
                 navigator.clipboard.writeText(fileURL).then(() => {
+                    // Display a popup
                     alert('Link copied to clipboard!');
                 }).catch(err => {
                     console.error('Failed to copy link: ', err);
