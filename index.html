@@ -10,8 +10,8 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: url('https://unblast.com/wp-content/uploads/2021/01/Space-Background-Image-3.jpg') no-repeat center center fixed;
-            background-size: cover; /* oder contain, je nach Bedarf */
+            background: url('https://example.com/background-image.jpg') no-repeat center center fixed;
+            background-size: cover;
         }
         #dropZone {
             width: 100vw;
@@ -24,7 +24,7 @@
             color: #666;
             border: 2px dashed #ccc;
             border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.5); /* Weniger Transparenz */
             position: absolute;
             top: 0;
             left: 0;
@@ -33,7 +33,7 @@
         }
         #dropZone.dragover {
             border-color: #333;
-            background-color: rgba(240, 240, 240, 0.8);
+            background-color: rgba(240, 240, 240, 0.7); /* Weniger Transparenz im Drag-over-Zustand */
         }
         #notification {
             position: fixed;
