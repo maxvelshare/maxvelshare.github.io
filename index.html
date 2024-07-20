@@ -142,6 +142,7 @@
         });
 
         function handleFile(file) {
+            // Generate a unique ID for the file
             const fileID = firebase.database().ref().child('uploads').push().key;
             const storageRef = storage.ref('uploads/' + fileID);
             const uploadTask = storageRef.put(file);
@@ -157,7 +158,7 @@
                 },
                 () => {
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                        // Store the file URL in the database under the generated fileID
+                        // Save the file URL in the database under the generated fileID
                         database.ref('files/' + fileID).set({ url: url, name: file.name }).then(() => {
                             const viewURL = `https://maxvelshare.github.io/view.html?viewkey=${fileID}`;
                             copyLink(viewURL);
