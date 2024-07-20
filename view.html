@@ -5,85 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View File</title>
     <style>
-        body {
+        body, html {
             margin: 0;
             padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background: #f5f5f5;
             display: flex;
-            align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #f0f0f0;
+            align-items: center;
             font-family: Arial, sans-serif;
         }
-        #container {
+        #fileContainer {
+            max-width: 90%;
+            max-height: 90%;
+            overflow: hidden;
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        video {
+            width: 100%;
+            height: auto;
+        }
+        #errorMessage {
             text-align: center;
-        }
-        img, video {
-            max-width: 90vw;
-            max-height: 90vh;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-        }
-        h1 {
-            margin-top: 20px;
-            font-size: 24px;
+            color: #e74c3c;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <div id="fileDisplay"></div>
-        <h1 id="fileName">Loading...</h1>
+    <div id="fileContainer">
+        <div id="errorMessage"></div>
     </div>
 
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
     <script>
-        function getQueryParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        function displayFile(url, fileName) {
-            const fileDisplay = document.getElementById('fileDisplay');
-            const fileNameElement = document.getElementById('fileName');
-            
-            fileNameElement.textContent = fileName;
-
-            // Display image or video based on file type
-            if (fileName.match(/\.(jpg|jpeg|png|gif)$/i)) {
-                fileDisplay.innerHTML = `<img src="${url}" alt="File Preview">`;
-            } else if (fileName.match(/\.(mp4|webm)$/i)) {
-                fileDisplay.innerHTML = `<video controls><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video>`;
-            } else {
-                fileDisplay.innerHTML = `<p>Unsupported file type</p>`;
-            }
-        }
-
-        window.onload = () => {
-            const viewKey = getQueryParameter('viewkey');
-            if (viewKey) {
-                // Construct the file URL from Firebase Storage
-                const fileURL = `https://firebasestorage.googleapis.com/v0/b/maxvel-7367f.appspot.com/o/uploads%2F${encodeURIComponent(viewKey)}?alt=media`;
-                // Fetch the file
-                fetch(fileURL)
-                    .then(response => {
-                        if (response.ok) {
-                            displayFile(fileURL, viewKey);
-                        } else {
-                            console.error('File not found:', response);
-                            document.getElementById('fileName').textContent = 'File not found';
-                            document.getElementById('fileDisplay').innerHTML = `<p>Unable to load the file. Please check the URL or contact support.</p>`;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file:', error);
-                        document.getElementById('fileName').textContent = 'Error loading file';
-                        document.getElementById('fileDisplay').innerHTML = `<p>Unable to load the file. Please check the URL or contact support.</p>`;
-                    });
-            } else {
-                document.getElementById('fileName').textContent = 'No file specified';
-                document.getElementById('fileDisplay').innerHTML = `<p>Please provide a valid file key in the URL.</p>`;
-            }
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqLQh3vlumESlbAsZSZRQChp7eW43kzhk",
+            authDomain: "maxvel-7367f.firebaseapp.com",
+            projectId: "maxvel-7367f",
+            storageBucket: "maxvel-7367f.appspot.com",
+            messagingSenderId: "394250427835",
+            appId: "1:394250427835:web:5b1e7bfbddad733277789e",
+            measurementId: "G-63JCPM2NR0"
         };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+
+        // Function to get the URL parameter
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const viewKey = getQueryParam('viewkey');
+        const fileContainer = document.getElementById('fileContainer');
+        const errorMessage = document.getElementById('errorMessage');
+
+        if (viewKey) {
+            const storageRef = storage.ref('uploads/' + viewKey);
+
+            storageRef.getDownloadURL().then((url) => {
+                console.log('File URL:', url); // Log the URL
+                const img = new Image();
+                img.src = url;
+                img.onload = () => {
+                    fileContainer.innerHTML = ''; // Clear any existing content
+                    fileContainer.appendChild(img);
+                };
+                img.onerror = () => {
+                    // Not an image, try video
+                    const video = document.createElement('video');
+                    video.src = url;
+                    video.controls = true;
+                    fileContainer.innerHTML = ''; // Clear any existing content
+                    fileContainer.appendChild(video);
+                };
+            }).catch((error) => {
+                console.error('Error loading file:', error); // Log the error
+                errorMessage.textContent = 'Error loading file: ' + error.message;
+            });
+        } else {
+            errorMessage.textContent = 'No view key provided.';
+        }
     </script>
 </body>
 </html>
