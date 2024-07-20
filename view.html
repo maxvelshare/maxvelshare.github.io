@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maxvel's File Host</title>
+    <title>Maxvel's Image Host</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- Link to favicon -->
 
     <style>
@@ -34,20 +34,15 @@
             color: #fff; /* Text color white */
             font-size: 24px;
             font-weight: bold;
-            z-index: 1; /* Ensure text is above other elements */
+            z-index: 10; /* Ensure text is above other elements */
             background: rgba(0, 0, 0, 0.6); /* Background color with slight opacity for better readability */
             padding: 5px; /* Padding around the text */
             border-radius: 5px; /* Rounded corners for the text background */
         }
-        img {
+        img, video {
             max-width: 100%;
             max-height: 100%;
-            display: block; /* Ensure the image does not overflow */
-        }
-        video {
-            width: 100%;
-            height: auto;
-            display: block; /* Ensure the video does not overflow */
+            display: block; /* Ensure the content does not overflow */
         }
         #errorMessage {
             text-align: center;
@@ -59,7 +54,7 @@
 </head>
 <body>
     <div id="fileContainer">
-        <div id="title">Maxvel's File Host</div> <!-- Title text overlaid -->
+        <div id="title">Maxvel's Image Host</div> <!-- Title text overlaid -->
         <div id="errorMessage"></div>
     </div>
 
