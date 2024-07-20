@@ -75,27 +75,35 @@
 
         // Event listeners
         dropZone.addEventListener('click', () => fileInput.click());
+
         dropZone.addEventListener('dragover', (event) => {
-            event.preventDefault();
+            event.preventDefault(); // Necessary to allow dropping
+            event.stopPropagation();
             dropZone.classList.add('dragover');
         });
-        dropZone.addEventListener('dragleave', () => {
+
+        dropZone.addEventListener('dragleave', (event) => {
+            event.stopPropagation();
             dropZone.classList.remove('dragover');
         });
+
         dropZone.addEventListener('drop', (event) => {
-            event.preventDefault();
+            event.preventDefault(); // Necessary to prevent default behavior
+            event.stopPropagation();
             dropZone.classList.remove('dragover');
             const files = event.dataTransfer.files;
             if (files.length > 0) {
                 handleFile(files[0]);
             }
         });
+
         fileInput.addEventListener('change', (event) => {
             const files = event.target.files;
             if (files.length > 0) {
                 handleFile(files[0]);
             }
         });
+
         copyButton.addEventListener('click', copyLink);
 
         function handleFile(file) {
