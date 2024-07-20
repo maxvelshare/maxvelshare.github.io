@@ -25,28 +25,29 @@
             background: #666; /* Gray background for the frame */
             padding: 10px; /* Padding around the content */
             border-radius: 8px; /* Rounded corners */
-            display: flex;
-            justify-content: center;
-            align-items: center;
             overflow: hidden;
-            margin-top: 10%; /* Move the container slightly higher */
         }
         #title {
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 10px; /* Adjust top position as needed */
+            left: 10px; /* Adjust left position as needed */
             color: #fff; /* Text color white */
             font-size: 24px;
             font-weight: bold;
             z-index: 1; /* Ensure text is above other elements */
+            background: rgba(0, 0, 0, 0.6); /* Background color with slight opacity for better readability */
+            padding: 5px; /* Padding around the text */
+            border-radius: 5px; /* Rounded corners for the text background */
         }
         img {
             max-width: 100%;
             max-height: 100%;
+            display: block; /* Ensure the image does not overflow */
         }
         video {
             width: 100%;
             height: auto;
+            display: block; /* Ensure the video does not overflow */
         }
         #errorMessage {
             text-align: center;
@@ -58,7 +59,7 @@
 </head>
 <body>
     <div id="fileContainer">
-        <div id="title">Maxvel's File Host</div> <!-- Added title element -->
+        <div id="title">Maxvel's File Host</div> <!-- Title text overlaid -->
         <div id="errorMessage"></div>
     </div>
 
