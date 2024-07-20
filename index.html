@@ -14,8 +14,8 @@
             background-size: cover;
         }
         #dropZone {
-            width: 80vw; /* Size of the drop zone */
-            height: 80vh; /* Size of the drop zone */
+            width: 80%;
+            height: 80%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,19 +24,17 @@
             color: #666;
             border: 2px dashed #ccc;
             border-radius: 8px;
-            background-color: rgba(255, 255, 255, 0.9); /* Less transparency */
+            background-color: rgba(255, 255, 255, 0.9);
             position: absolute;
-            top: 50%; /* Centering with Top 50% */
-            left: 50%; /* Centering with Left 50% */
-            transform: translate(-50%, -50%); /* Center based on Top/Left 50% */
+            top: 10%;
+            left: 10%;
             z-index: 9999;
             transition: background-color 0.3s, border-color 0.3s;
-            text-align: center; /* Center text horizontally */
-            padding: 20px; /* Padding */
+            text-align: center;
         }
         #dropZone.dragover {
             border-color: #333;
-            background-color: rgba(240, 240, 240, 0.9); /* Less transparency when dragging over */
+            background-color: rgba(240, 240, 240, 0.8);
         }
         #notification {
             position: fixed;
@@ -71,17 +69,6 @@
             font-size: 16px;
             color: #999;
         }
-        /* Additional styles for mobile devices */
-        @media (max-width: 600px) {
-            #dropZone {
-                width: 90vw; /* Larger viewport percentage for smaller screens */
-                height: 70vh; /* Smaller height for smaller screens */
-                font-size: 18px; /* Smaller font size for smaller screens */
-            }
-            #dropZone .madeBy {
-                font-size: 14px; /* Smaller font size for smaller screens */
-            }
-        }
     </style>
 </head>
 <body>
@@ -90,7 +77,7 @@
         <p class="madeBy"> made by maxvel187</p>
     </div>
     <input type="file" id="fileInput" style="display: none;">
-    <div id="notification">Link copied to clipboard and redirecting...</div>
+    <div id="notification">Link copied to clipboard!</div>
     <p id="status"></p>
 
     <!-- Firebase -->
@@ -117,9 +104,6 @@
         const fileInput = document.getElementById('fileInput');
         const notification = document.getElementById('notification');
         const statusElement = document.getElementById('status');
-
-        let fileURL = ''; // Variable to store the file URL
-        let viewKey = ''; // Variable to store the unique view key
 
         // Event listeners
         dropZone.addEventListener('click', () => fileInput.click());
@@ -156,22 +140,21 @@
             const storageRef = storage.ref('uploads/' + file.name);
             const uploadTask = storageRef.put(file);
 
-            uploadTask.on('state_changed', 
+            uploadTask.on('state_changed',
                 (snapshot) => {
                     // Progress function (optional)
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     statusElement.innerText = 'Upload is ' + progress + '% done';
-                }, 
+                },
                 (error) => {
                     // Error function
                     console.error('Upload failed:', error);
                     statusElement.innerText = 'Upload failed: ' + error.message;
-                }, 
+                },
                 () => {
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                        fileURL = url; // Store the file URL
-                        viewKey = file.name; // Use the filename as the view key
+                        const viewKey = file.name; // Use the filename as the view key
                         const customURL = `https://maxvelshare.github.io/view.html?viewkey=${encodeURIComponent(viewKey)}`;
                         copyLink(customURL); // Automatically copy the link
                         statusElement.innerText = ''; // Clear the status
