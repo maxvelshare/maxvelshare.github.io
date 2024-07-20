@@ -63,5 +63,5 @@
             const viewKey = getQueryParameter('viewkey');
             if (viewKey) {
                 const fileURL = `https://firebasestorage.googleapis.com/v0/b/maxvel-7367f.appspot.com/o/uploads%2F${encodeURIComponent(viewKey)}?alt=media`;
-                displayFile(fileURL, viewKey);
-           
+                fetch(fileURL)
+                   
