@@ -8,16 +8,11 @@
         #copyButton {
             display: none;
         }
-        #link {
-            word-wrap: break-word;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <h1>Upload a File</h1>
     <input type="file" id="fileInput">
-    <p id="link"></p>
     <button id="copyButton">Copy Link</button>
     <p id="status"></p>
 
@@ -44,6 +39,8 @@
         document.getElementById('fileInput').addEventListener('change', uploadFile);
         document.getElementById('copyButton').addEventListener('click', copyLink);
 
+        let fileURL = ''; // Variable to store the file URL
+
         function uploadFile(event) {
             const file = event.target.files[0];
 
@@ -69,15 +66,8 @@
                 () => {
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
-                        const linkElement = document.getElementById('link');
-                        linkElement.innerText = url;
-                        linkElement.href = url; // Make the link clickable
-                        linkElement.style.display = 'block'; // Ensure the link is visible
-
-                        const copyButton = document.getElementById('copyButton');
-                        copyButton.style.display = 'inline';
-                        copyButton.disabled = false;
-
+                        fileURL = url; // Store the file URL
+                        document.getElementById('copyButton').style.display = 'inline';
                         document.getElementById('status').innerText = ''; // Clear the status
                     });
                 }
@@ -85,12 +75,15 @@
         }
 
         function copyLink() {
-            const link = document.getElementById('link').innerText;
-            navigator.clipboard.writeText(link).then(() => {
-                alert('Link copied to clipboard!');
-            }).catch(err => {
-                console.error('Failed to copy link: ', err);
-            });
+            if (fileURL) {
+                navigator.clipboard.writeText(fileURL).then(() => {
+                    alert('Link copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy link: ', err);
+                });
+            } else {
+                alert('No link available to copy.');
+            }
         }
     </script>
 </body>
