@@ -8,8 +8,9 @@
 <body>
     <h1>Upload a File</h1>
     <input type="file" id="fileInput">
-    <button onclick="uploadFile()">Upload</button>
+    <button id="uploadButton">Upload</button>
     <p id="link"></p>
+    <p id="status"></p>
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
@@ -28,19 +29,42 @@
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(firebaseConfig);
         const storage = firebase.storage();
+
+        document.getElementById('uploadButton').addEventListener('click', uploadFile);
 
         function uploadFile() {
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
-            const storageRef = storage.ref('uploads/' + file.name);
 
-            storageRef.put(file).then((snapshot) => {
-                snapshot.ref.getDownloadURL().then((url) => {
-                    document.getElementById('link').innerText = 'File available at: ' + url;
-                });
-            });
+            if (!file) {
+                document.getElementById('status').innerText = 'No file selected!';
+                return;
+            }
+
+            const storageRef = storage.ref('uploads/' + file.name);
+            const uploadTask = storageRef.put(file);
+
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    // Progress function (optional)
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    document.getElementById('status').innerText = 'Upload is ' + progress + '% done';
+                }, 
+                (error) => {
+                    // Error function
+                    console.error('Upload failed:', error);
+                    document.getElementById('status').innerText = 'Upload failed: ' + error.message;
+                }, 
+                () => {
+                    // Complete function
+                    uploadTask.snapshot.ref.getDownloadURL().then((url) => {
+                        document.getElementById('link').innerText = 'File available at: ' + url;
+                        document.getElementById('status').innerText = 'Upload successful!';
+                    });
+                }
+            );
         }
     </script>
 </body>
