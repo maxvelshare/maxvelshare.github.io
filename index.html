@@ -119,6 +119,7 @@
         const statusElement = document.getElementById('status');
 
         let fileURL = ''; // Variable to store the file URL
+        let viewKey = ''; // Variable to store the unique view key
 
         // Event listeners
         dropZone.addEventListener('click', () => fileInput.click());
@@ -170,17 +171,23 @@
                     // Complete function
                     uploadTask.snapshot.ref.getDownloadURL().then((url) => {
                         fileURL = url; // Store the file URL
-                        copyLink(); // Automatically copy the link
+                        viewKey = new Date().getTime(); // Generate a unique view key (timestamp)
+                        const customURL = `https://maxvelshare.github.io/view?viewkey=${viewKey}`;
+                        copyLink(customURL); // Automatically copy the link
                         statusElement.innerText = ''; // Clear the status
+                        setTimeout(() => {
+                            window.location.href = customURL; // Redirect to the custom URL
+                        }, 3000); // Redirect after 3 seconds
                     });
                 }
             );
         }
 
-        function copyLink() {
-            if (fileURL) {
-                navigator.clipboard.writeText(fileURL).then(() => {
+        function copyLink(url) {
+            if (url) {
+                navigator.clipboard.writeText(url).then(() => {
                     // Display a notification
+                    notification.innerText = 'Link copied to clipboard and redirecting...';
                     notification.classList.add('show');
                     setTimeout(() => {
                         notification.classList.remove('show');
@@ -195,3 +202,4 @@
     </script>
 </body>
 </html>
+
