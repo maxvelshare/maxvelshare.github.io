@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+    <h1>Upload a File</h1>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload</button>
+    <p id="link"></p>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqLQh3vlumESlbAsZSZRQChp7eW43kzhk",
+            authDomain: "maxvel-7367f.firebaseapp.com",
+            projectId: "maxvel-7367f",
+            storageBucket: "maxvel-7367f.appspot.com",
+            messagingSenderId: "394250427835",
+            appId: "1:394250427835:web:5b1e7bfbddad733277789e",
+            measurementId: "G-63JCPM2NR0"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+
+        function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const storageRef = storage.ref('uploads/' + file.name);
+
+            storageRef.put(file).then((snapshot) => {
+                snapshot.ref.getDownloadURL().then((url) => {
+                    document.getElementById('link').innerText = 'File available at: ' + url;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
