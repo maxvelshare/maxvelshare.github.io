@@ -32,18 +32,26 @@
             border-color: #333;
             background-color: rgba(240, 240, 240, 0.8);
         }
-        #copyButton {
-            display: none;
-        }
         #status {
             margin-top: 10px;
+        }
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
         }
     </style>
 </head>
 <body>
     <div id="dropZone">Drag & Drop your file here or click to select</div>
     <input type="file" id="fileInput" style="display: none;">
-    <button id="copyButton">Copy Link</button>
+    <div id="notification">Link copied to clipboard!</div>
     <p id="status"></p>
 
     <!-- Firebase -->
@@ -68,7 +76,7 @@
 
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
-        const copyButton = document.getElementById('copyButton');
+        const notification = document.getElementById('notification');
         const statusElement = document.getElementById('status');
 
         let fileURL = ''; // Variable to store the file URL
@@ -133,8 +141,11 @@
         function copyLink() {
             if (fileURL) {
                 navigator.clipboard.writeText(fileURL).then(() => {
-                    // Display a popup
-                    alert('Link copied to clipboard!');
+                    // Display a notification
+                    notification.style.display = 'block';
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 3000); // Hide the notification after 3 seconds
                 }).catch(err => {
                     console.error('Failed to copy link: ', err);
                 });
