@@ -8,11 +8,11 @@
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
+            text-align: center;
         }
         .file-viewer {
             max-width: 600px;
             margin: auto;
-            text-align: center;
         }
         img {
             max-width: 100%;
@@ -28,33 +28,54 @@
     </div>
 
     <script>
+        // Function to get URL parameters
         function getQueryParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(name);
         }
 
-        function fetchFileDetails(url) {
-            // You might need to adjust this part based on how you want to fetch the details.
-            // This example assumes a static site with a simple approach to determine file details.
-            const fileName = url.substring(url.lastIndexOf('/') + 1);
-            const fileSize = 'Unknown size'; // If you want to fetch actual size, you'll need a backend or additional logic.
+        // Function to update the page with file details
+        function updatePage(fileUrl) {
+            // Extract the file name from the URL
+            const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+            
+            // Update page content
+            document.getElementById('file-name').textContent = `${fileName} (Loading...)`;
+            document.getElementById('file-image').src = fileUrl;
+            document.getElementById('file-image').style.display = 'block';
+            
+            // Simulate fetching file size (you might want to fetch this via a backend if needed)
+            document.getElementById('file-info').textContent = 'Fetching file details...';
 
-            return { fileName, fileSize };
+            // Optional: Simulate file size information
+            setTimeout(() => {
+                document.getElementById('file-info').textContent = `Uploaded at ${new Date().toLocaleString()}`; // Adjust as needed
+            }, 500); // Simulate delay
         }
 
+        // Handle page load
         document.addEventListener('DOMContentLoaded', () => {
             const fileUrl = getQueryParam('url');
+            
             if (!fileUrl) {
                 document.getElementById('file-info').textContent = 'No file URL provided.';
+                document.getElementById('file-name').textContent = 'Error: No file URL provided.';
                 return;
             }
 
-            const fileDetails = fetchFileDetails(fileUrl);
-
-            document.getElementById('file-name').textContent = `${fileDetails.fileName} (${fileDetails.fileSize})`;
-            document.getElementById('file-image').src = fileUrl;
-            document.getElementById('file-image').style.display = 'block';
-            document.getElementById('file-info').textContent = `Uploaded at ${new Date().toLocaleString()}`; // Example date, adjust as needed
+            // Verify if the file URL is valid
+            fetch(fileUrl, { method: 'HEAD' }) // Use HEAD to check if the file exists without downloading
+                .then(response => {
+                    if (response.ok) {
+                        updatePage(fileUrl);
+                    } else {
+                        throw new Error(`File not found (HTTP ${response.status})`);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('file-info').textContent = `Error: ${error.message}`;
+                    document.getElementById('file-name').textContent = 'Error: Unable to load file.';
+                });
         });
     </script>
 </body>
