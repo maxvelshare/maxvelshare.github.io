@@ -52,38 +52,10 @@
 <body>
     <div id="mediaContainer"></div>
 
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const viewKey = urlParams.get('viewkey');
-
-        if (viewKey) {
-            const storage = firebase.storage();
-            const mediaRef = storage.ref('uploads/' + decodeURIComponent(viewKey));
-            mediaRef.getDownloadURL().then((url) => {
-                const mediaContainer = document.getElementById('mediaContainer');
-                const ext = viewKey.split('.').pop().toLowerCase();
-
-                if (ext === 'mp4' || ext === 'webm' || ext === 'ogg') {
-                    const video = document.createElement('video');
-                    video.src = url;
-                    video.controls = true;
-                    mediaContainer.appendChild(video);
-                } else {
-                    const img = document.createElement('img');
-                    img.src = url;
-                    mediaContainer.appendChild(img);
-                }
-            }).catch((error) => {
-                console.error('Error fetching file:', error);
-            });
-        } else {
-            document.body.innerHTML = 'No file specified.';
-        }
-    </script>
-
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -96,6 +68,38 @@
             measurementId: "G-63JCPM2NR0"
         };
         firebase.initializeApp(firebaseConfig);
+        const storage = firebase.storage();
+        const database = firebase.database();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewKey = urlParams.get('viewkey');
+
+        if (viewKey) {
+            database.ref('files/' + viewKey).once('value').then((snapshot) => {
+                const fileData = snapshot.val();
+                if (fileData && fileData.url) {
+                    const mediaContainer = document.getElementById('mediaContainer');
+                    const ext = fileData.url.split('.').pop().toLowerCase();
+
+                    if (ext === 'mp4' || ext === 'webm' || ext === 'ogg') {
+                        const video = document.createElement('video');
+                        video.src = fileData.url;
+                        video.controls = true;
+                        mediaContainer.appendChild(video);
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = fileData.url;
+                        mediaContainer.appendChild(img);
+                    }
+                } else {
+                    document.body.innerHTML = 'File not found.';
+                }
+            }).catch((error) => {
+                console.error('Error fetching file data:', error);
+            });
+        } else {
+            document.body.innerHTML = 'No view key provided.';
+        }
     </script>
 </body>
 </html>
