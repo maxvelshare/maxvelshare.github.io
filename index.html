@@ -165,7 +165,13 @@
                             setTimeout(() => {
                                 window.location.href = viewURL;
                             }, 3000);
+                        }).catch((error) => {
+                            console.error('Error saving URL to database:', error);
+                            statusElement.innerText = 'Error saving URL to database: ' + error.message;
                         });
+                    }).catch((error) => {
+                        console.error('Error getting download URL:', error);
+                        statusElement.innerText = 'Error getting download URL: ' + error.message;
                     });
                 }
             );
@@ -180,6 +186,7 @@
                     }, 3000);
                 }).catch(err => {
                     console.error('Failed to copy link: ', err);
+                    statusElement.innerText = 'Failed to copy link: ' + err.message;
                 });
             } else {
                 alert('No link available to copy.');
