@@ -10,7 +10,7 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background: #f5f5f5;
+            background: #000; /* Changed background to black */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -20,6 +20,7 @@
             max-width: 90%;
             max-height: 90%;
             overflow: hidden;
+            position: relative;
         }
         img {
             max-width: 100%;
@@ -34,10 +35,20 @@
             color: #e74c3c;
             font-size: 18px;
         }
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #fff; /* Text color white */
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1; /* Ensure text is above other elements */
+        }
     </style>
 </head>
 <body>
     <div id="fileContainer">
+        <div id="title">Maxvel's File Host</div> <!-- Added title element -->
         <div id="errorMessage"></div>
     </div>
 
